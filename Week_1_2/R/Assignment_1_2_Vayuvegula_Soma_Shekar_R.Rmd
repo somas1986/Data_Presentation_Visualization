@@ -1,0 +1,85 @@
+---
+title: "Assignment_1_2_Vayuvegula_Soma_Shekar_R"
+author: "Soma Shekar Vayuvegula"
+date: "12/06/2023"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+# Importing and Cleaning Data
+
+## Dataset importing
+
+```{r}
+library("readxl")
+
+df_obama <- read_excel("/Users/somashekarvayuvegula/Documents/Workspace/Data_Presentation_Visualization/Week_1_2/data/obama-approval-ratings.xls")
+
+head(df_obama)
+```
+```{r}
+par(mar=c(12, 10, 1, 1))
+barplot(t(as.matrix(df_obama$Approve)),names.arg = df_obama$Issue,
+        col="dodgerblue3",main="Bar Plot - Issue vs Approve",xlab="Issue",ylab="Approve",las=2,cex.axis=0.4, cex.names=0.4)
+```
+```{r}
+issues <- df_obama$Issue
+df_obama<-subset(df_obama,select=c(Approve,Disapprove,None))
+head(df_obama)
+```
+
+```{r}
+par(mar=c(5, 5, 1, 8))
+barplot(t(as.matrix(df_obama)),names.arg = issues,
+        main = "Stacked Bar Plot - Obama Approval Status",
+        xlab = "Issue type", ylab = "Count", las=2,cex.axis=0.4, cex.names=0.4,
+        col = c( "darkblue", "red","darkgrey"),
+        legend.text = c("Approve","Disapprove","None"),args.legend = list(x = "topright",
+                           inset = c(-0.3, 0)),
+        beside = FALSE)
+```
+
+```{r}
+pct<-round(df_obama$Approve/sum(df_obama$Approve)*100)
+lbls<-paste(issues,pct)
+lbls <- paste(lbls,"%",sep="")
+pie(df_obama$Approve,labels = lbls,col=rainbow(length(lbls)),main="Pie Chart - Obama Approval Status")
+```
+
+```{r}
+library(ggplot2)
+ 
+# Create test data.
+data <- data.frame(
+  category=issues,
+  count=df_obama$Approve
+)
+ 
+# Compute percentages
+data$fraction <- data$count / sum(data$count)
+
+# Compute the cumulative percentages (top of each rectangle)
+data$ymax <- cumsum(data$fraction)
+
+# Compute the bottom of each rectangle
+data$ymin <- c(0, head(data$ymax, n=-1))
+
+# Compute label position
+data$labelPosition <- (data$ymax + data$ymin) / 2
+
+# Compute a good label
+data$label <- paste0(data$category, "\n value: ", data$count)
+
+# Make the plot
+ggplot(data, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=category)) +
+  geom_rect() +
+  geom_label( x=3.55, aes(y=labelPosition, label=label), size=1.75) +
+  scale_fill_brewer(palette=4) +
+  coord_polar(theta="y") +
+  xlim(c(2, 4)) +
+  theme_void() +
+  theme(legend.position = "none")
+```
