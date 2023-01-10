@@ -1,0 +1,41 @@
+---
+title: "Assignment_3_4_Vayuvegula_Soma_Shekar"
+author: "Soma Shekar Vayuvegula"
+date: "01/07/2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Packages, echo=FALSE}
+library(ggplot2)
+library(dplyr)
+library(gapminder)
+library(readxl)
+library(reshape2)
+```
+
+```{r dataimport, echo=TRUE}
+df<-read_excel("world-population.xlsm")
+print(df)
+print(is.data.frame(df))
+print(ncol(df))
+print(nrow(df))
+```
+
+```{r LineChart, echo=TRUE}
+options(scipen=999)
+ggplot(df, aes(x=Year, y=Population)) +
+  geom_line( color="blue", size=1, alpha=0.9, linetype=1) +
+  scale_y_continuous(labels = scales::label_number_si()) +
+  ggtitle("World Population - Line Chart")
+```
+
+```{r StepChart, echo=TRUE}
+ggplot(df, aes(x=Year, y=Population)) +
+  geom_step(color="blue", size=1, alpha=0.9)+
+  scale_y_continuous(labels = scales::label_number_si()) +
+  ggtitle("World Population - Step Chart")
+```
