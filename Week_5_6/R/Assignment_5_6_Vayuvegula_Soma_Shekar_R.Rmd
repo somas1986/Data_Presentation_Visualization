@@ -1,0 +1,50 @@
+---
+title: "Assignment_5_6_Vayuvegula_Soma_Shekar_R"
+author: "Soma Shekar Vayuvegula"
+date: "01/21/2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Packages, echo=FALSE}
+library("ggplot2")
+library("dplyr")
+library("gapminder")
+library("readxl")
+library("tidyverse")
+library("reshape2")
+library("data.table")
+library("plotly")
+library("treemap")
+
+```
+
+```{r dataimport, echo=TRUE}
+df_unemp<-read.csv("unemployement-rate-1948-2010.csv")
+head(df_unemp,5)
+
+df_exp<-read.table("expenditures.txt",sep='\t',header=TRUE)
+head(df_exp,5)
+```
+
+```{r TreMap, echo=TRUE}
+exp_agg_df<-aggregate(df_unemp$Value,by=list(Year=df_unemp$Year),FUN=sum)
+group<-exp_agg_df$Year
+value<-exp_agg_df$x
+df_exp_agg<-data.frame(group,value)
+treemap(df_exp_agg,index="group",vSize="value",type="index",title="Unemployment between 1948-2010",fontsize.title = 12)
+```
+
+```{r AreaMap, echo=TRUE}
+ggplot(df_exp_agg,aes(x=group,y=value))+geom_area(fill="green",alpha=0.4)+
+  labs(x="Year",y="Unemployment")+ggtitle("Expenditures per year - Area Map")
+```
+
+```{r StackedAreaChart, echo=TRUE}
+Values<-round(df_unemp$Value,0)
+df1<-data.frame(Year=df_unemp$Year,Period=df_unemp$Period,Values=round(df_unemp$Value,0))
+ggplot(df1,aes(x=Year,y=Values,fill=Period))+geom_area(colour="black",size=0.2,alpha=0.8)+ggtitle("Unemployment Per Year - Stacked Area Chart")
+```

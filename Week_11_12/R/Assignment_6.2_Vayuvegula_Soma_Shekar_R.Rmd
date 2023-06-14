@@ -1,0 +1,76 @@
+---
+title: "Assignment_6.2_Vayuvegula_Soma_Shekar_R"
+author: "Soma Shekar Vayuvegula"
+date: "02/25/2023"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Packages, echo=FALSE}
+library("ggplot2")
+library("dplyr")
+library("gapminder")
+library("readxl")
+library("tidyverse")
+library("reshape2")
+library("data.table")
+library("plotly")
+library("treemap")
+library("reshape") 
+library("dplyr")
+library("plyr")
+library("mapview")
+library("GGally")
+```
+
+```{r dataimport, echo=TRUE}
+df_crime<-read.csv("crimeratesbystate-formatted.csv")
+head(df_crime,5)
+
+df_education<-read.csv("education.csv")
+head(df_education,5)
+```
+
+```{r Histogram, echo=TRUE}
+hist(df_crime$robbery,main="Robbery Counts by Amount",xlab="Robbery",
+      ylab="Counts",
+      col="blue",
+      freq=TRUE)
+
+```
+```{r Boxplot, echo=TRUE}
+options(warn=-1)
+crime <- subset(df_crime, select = -c(state))
+boxplot(x=crime$robbery,data=crime,xlab="Frequency",ylab="Robbery",main="Box Plot")
+```
+
+```{r BulletChart, echo=TRUE}
+tibble(
+  name = "R Bullet Chart",
+  quant_value = 550,
+  qualitative = 600
+)
+df_education %>% 
+  ggplot(aes(x = reading, y =  state)) +
+  geom_col(width = 0.5, aes(x = 625), fill = "grey") +
+  geom_col(width = 0.25,aes(x = reading), fill = "green") +
+  geom_col(aes(x = writing),fill = "black",color = NA,width = 0.25) +
+  theme_minimal() +
+  labs(title = "Education - Bullet Chart")
+
+```
+```{r LineChart, echo=TRUE}
+crime <- df_crime[,c("state","robbery")]
+crime <- crime[!(crime$state=='United States'),]
+p<-ggplot(crime,aes(x=state,y=robbery,group=1))+geom_line()+ggtitle("Robbery - Line Chart") +
+  xlab("Robbery") + 
+  ylab("State")+theme(axis.text.x = element_text(angle = 90))
+p
+
+```

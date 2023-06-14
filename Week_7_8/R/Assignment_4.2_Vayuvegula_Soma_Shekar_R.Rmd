@@ -1,0 +1,46 @@
+---
+title: "Assignment_4.2_Vayuvegula_Soma_Shekar_R"
+author: "Soma Shekar Vayuvegula"
+date: "02/04/2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Packages, echo=FALSE}
+library("ggplot2")
+library("dplyr")
+library("gapminder")
+library("readxl")
+library("tidyverse")
+library("reshape2")
+library("data.table")
+library("plotly")
+library("treemap")
+
+```
+
+```{r dataimport, echo=TRUE}
+df_crime<-read.csv("crimerates-by-state-2005.csv")
+head(df_crime,5)
+```
+
+```{r ScatterPlot, echo=TRUE}
+ggplot(df_crime,aes(x=state,y=burglary))+geom_point()+
+  ggtitle("Burglary per State - Scatter Plot")+
+  theme(axis.text.x = element_text(angle=90))
+```
+
+```{r BubblePlot, echo=TRUE}
+ggplot(df_crime,aes(x=state,y=burglary,size=burglary))+geom_point()+
+  ggtitle("Burglary per State - Bubble Plot")+
+  theme(axis.text.x = element_text(angle=90))
+```
+
+```{r DensityPlot, echo=TRUE}
+ggplot(df_crime,aes(x=burglary))+
+  geom_histogram(aes(y=..density..),bins=30,color="blue",fill="white")+
+  geom_density()+ggtitle("Burglary - Density Plot")
+```

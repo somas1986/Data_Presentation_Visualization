@@ -1,0 +1,62 @@
+---
+title: "Assignment_5.2_Vayuvegula_Soma_Shekar_R"
+author: "Soma Shekar Vayuvegula"
+date: "02/18/2023"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Packages, echo=FALSE}
+library("ggplot2")
+library("dplyr")
+library("gapminder")
+library("readxl")
+library("tidyverse")
+library("reshape2")
+library("data.table")
+library("plotly")
+library("treemap")
+library("reshape") 
+library("dplyr")
+library("plyr")
+library("mapview")
+```
+
+```{r dataimport, echo=TRUE}
+df_ppg<-read.csv("ppg2008.csv")
+head(df_ppg,5)
+
+df_costco<-read.csv("costcos-geocoded.csv")
+head(df_costco,5)
+```
+
+```{r Heatmap, echo=TRUE}
+library(scales)
+df_melt<-melt(df_ppg)
+df_melt<-ddply(df_melt, .(variable),transform,rescale=rescale(value))
+base_size<-9
+
+ggp <- ggplot(df_melt, aes(variable,Name))+geom_tile(aes(fill=rescale),color='white')+scale_fill_gradient(low="white",high = "steelblue")+ theme_grey(base_size = base_size) + labs(x = "", y = "") + scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0)) + 
+  theme(axis.text.x=element_text(angle=90, hjust=0, vjust= 0.1)) +
+  theme(axis.text.y=element_text(hjust=0, vjust= 0.1)) +
+  ggtitle("2008 Basketball Player Statistics") +
+  xlab("Statistics") + 
+  ylab("Basketball Player")
+ggp  
+
+```
+```{r spatialchart, echo=TRUE}
+mapview(df_costco, xcol = "Longitude", ycol = "Latitude",cex = 3,crs = 4269, grid = FALSE)
+```
+
+```{r contourchart, echo=TRUE}
+ggplot(df_costco, aes(x = Latitude, y = Longitude, fill = ..level..)) +
+  stat_density_2d(geom = "polygon") + ggtitle("Costcos - Contour Chart")
+```
